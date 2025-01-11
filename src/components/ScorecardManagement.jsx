@@ -1,61 +1,96 @@
-import React, { useState, useEffect } from 'react';
-import '../components/ScorecardManagement.css';
+import React, { useState, useEffect } from "react";
+import { db } from "../firebase/firebase"; 
+import { collection, addDoc, getDocs, updateDoc, doc } from "firebase/firestore";
+import "../components/ScorecardManagement.css";
 
 const ScorecardManagement = () => {
   const [matches, setMatches] = useState([]);
-  const [matchDetails, setMatchDetails] = useState({ team1: '', team2: '' });
+  const [matchDetails, setMatchDetails] = useState({ team1: "", team2: "" });
   const [teams, setTeams] = useState([]);
   const [currentMatch, setCurrentMatch] = useState(null);
-  const [ballDetails, setBallDetails] = useState({ runs: '', event: '' });
+  const [ballDetails, setBallDetails] = useState({
+    runs: "",
+    event: "",
+    batter: "",
+    bowler: "",
+  });
 
   useEffect(() => {
-    const storedTeams = JSON.parse(localStorage.getItem('teams')) || [];
-    const storedMatches = JSON.parse(localStorage.getItem('matches')) || [];
-    setTeams(storedTeams);
-    setMatches(storedMatches);
+    // Fetch teams from Firebase
+    const fetchTeams = async () => {
+      const teamSnapshot = await getDocs(collection(db, "teams"));
+      const teamList = teamSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setTeams(teamList);
+    };
+
+    // Fetch matches from Firebase
+    const fetchMatches = async () => {
+      const matchSnapshot = await getDocs(collection(db, "matches"));
+      const matchList = matchSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setMatches(matchList);
+    };
+
+    fetchTeams();
+    fetchMatches();
   }, []);
 
-  const addMatch = () => {
+  const addMatch = async () => {
     if (matchDetails.team1 && matchDetails.team2) {
+      const team1Members =
+        teams.find((team) => team.name === matchDetails.team1)?.members || [];
+      const team2Members =
+        teams.find((team) => team.name === matchDetails.team2)?.members || [];
       const newMatch = {
         ...matchDetails,
-        id: matches.length + 1,
         balls: [],
         totalRuns: 0,
         totalWickets: 0,
         currentOver: 0,
         currentBall: 0,
+        team1Members,
+        team2Members,
       };
-      const updatedMatches = [...matches, newMatch];
-      setMatches(updatedMatches);
-      localStorage.setItem('matches', JSON.stringify(updatedMatches)); 
-      setMatchDetails({ team1: '', team2: '' });
+
+      try {
+        const docRef = await addDoc(collection(db, "matches"), newMatch);
+        setMatches([...matches, { id: docRef.id, ...newMatch }]);
+        setMatchDetails({ team1: "", team2: "" });
+      } catch (error) {
+        console.error("Error adding match:", error);
+      }
     }
   };
 
-  const addBallDetails = () => {
-    if (currentMatch !== null) {
+  const addBallDetails = async () => {
+    if (currentMatch !== null && ballDetails.batter && ballDetails.bowler) {
+      const matchRef = doc(db, "matches", currentMatch);
       const updatedMatches = matches.map((match) => {
         if (match.id === currentMatch) {
           let { currentOver, currentBall, totalRuns, totalWickets } = match;
-  
-          if (ballDetails.event === 'WD' || ballDetails.event === 'N') {
+
+          if (ballDetails.event === "WD" || ballDetails.event === "NO") {
             totalRuns += parseInt(ballDetails.runs || 0);
             currentBall += 1;
           } else {
             currentBall += 1;
             totalRuns += parseInt(ballDetails.runs || 0);
-  
-            if (ballDetails.event === 'wicket') {
-              totalWickets += 1; 
+
+            if (ballDetails.event === "wicket" || ballDetails.event === "Wicket") {
+              totalWickets += 1;
             }
-  
+
             if (currentBall === 6) {
               currentOver += 1;
-              currentBall = 0; 
+              currentBall = 0;
             }
           }
-  
+
           const updatedMatch = {
             ...match,
             balls: [
@@ -64,6 +99,8 @@ const ScorecardManagement = () => {
                 over: `${currentOver}.${currentBall}`,
                 runs: ballDetails.runs,
                 event: ballDetails.event,
+                batter: ballDetails.batter,
+                bowler: ballDetails.bowler,
               },
             ],
             currentOver,
@@ -71,14 +108,17 @@ const ScorecardManagement = () => {
             totalRuns,
             totalWickets,
           };
+
+          // Update Firebase
+          updateDoc(matchRef, updatedMatch);
+
           return updatedMatch;
         }
         return match;
       });
-  
+
       setMatches(updatedMatches);
-      localStorage.setItem('matches', JSON.stringify(updatedMatches)); 
-      setBallDetails({ runs: '', event: '' });
+      setBallDetails({ runs: "", event: "", batter: "", bowler: "" });
     }
   };
 
@@ -90,7 +130,7 @@ const ScorecardManagement = () => {
         <select
           id="current-match-select"
           className="input"
-          onChange={(e) => setCurrentMatch(parseInt(e.target.value))}
+          onChange={(e) => setCurrentMatch(e.target.value)}
         >
           <option value="">-- Select Match --</option>
           {matches.map((match) => (
@@ -110,7 +150,7 @@ const ScorecardManagement = () => {
         >
           <option value="">-- Select Team 1 --</option>
           {teams.map((team) => (
-            <option key={team.name} value={team.name}>
+            <option key={team.id} value={team.name}>
               {team.name}
             </option>
           ))}
@@ -125,7 +165,7 @@ const ScorecardManagement = () => {
         >
           <option value="">-- Select Team 2 --</option>
           {teams.map((team) => (
-            <option key={team.name} value={team.name}>
+            <option key={team.id} value={team.name}>
               {team.name}
             </option>
           ))}
@@ -134,7 +174,7 @@ const ScorecardManagement = () => {
       <button className="btn add-btn" onClick={addMatch}>
         Add Match
       </button>
-      {currentMatch !== null && (
+      {currentMatch && (
         <div className="ball-details">
           <h4>Add Ball Details</h4>
           <input
@@ -151,6 +191,34 @@ const ScorecardManagement = () => {
             value={ballDetails.event}
             onChange={(e) => setBallDetails({ ...ballDetails, event: e.target.value })}
           />
+          <label>Batter:</label>
+          <select
+            value={ballDetails.batter}
+            onChange={(e) => setBallDetails({ ...ballDetails, batter: e.target.value })}
+          >
+            <option value="">-- Select Batter --</option>
+            {matches
+              .find((match) => match.id === currentMatch)
+              ?.team1Members.map((player) => (
+                <option key={player} value={player}>
+                  {player}
+                </option>
+              ))}
+          </select>
+          <label>Bowler:</label>
+          <select
+            value={ballDetails.bowler}
+            onChange={(e) => setBallDetails({ ...ballDetails, bowler: e.target.value })}
+          >
+            <option value="">-- Select Bowler --</option>
+            {matches
+              .find((match) => match.id === currentMatch)
+              ?.team2Members.map((player) => (
+                <option key={player} value={player}>
+                  {player}
+                </option>
+              ))}
+          </select>
           <button className="btn add-btn" onClick={addBallDetails}>
             Add Ball
           </button>
@@ -160,13 +228,17 @@ const ScorecardManagement = () => {
         <h3>Matches</h3>
         {matches.map((match) => (
           <div key={match.id} className="match-card">
-            <h4>{match.team1} vs {match.team2}</h4>
+            <h4>
+              {match.team1} vs {match.team2}
+            </h4>
             <p>Total Runs: {match.totalRuns}</p>
             <p>Total Wickets: {match.totalWickets}</p>
             <ul className="ball-list">
               {match.balls.map((ball, index) => (
                 <li key={index} className="list-item">
-                  Over {ball.over}: {ball.runs} runs ({ball.event || 'normal'})
+                  Over {ball.over}: {ball.runs} runs ({ball.event || "normal"})
+                  <br />
+                  Batter: {ball.batter}, Bowler: {ball.bowler}
                 </li>
               ))}
             </ul>

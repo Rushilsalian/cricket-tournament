@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../firebase/firebase";
-import { collection, addDoc, getDocs, deleteDoc, doc, updateDoc } from "firebase/firestore";
-import "../components/TeamManagement.css";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
+import "./TeamManagement.css";
 
 const TeamManagement = () => {
   const [teams, setTeams] = useState([]);
@@ -12,6 +19,7 @@ const TeamManagement = () => {
 
   const teamsCollection = collection(db, "teams");
 
+  // Fetch all teams from Firestore
   const fetchTeams = async () => {
     try {
       const querySnapshot = await getDocs(teamsCollection);
@@ -29,25 +37,30 @@ const TeamManagement = () => {
     fetchTeams();
   }, []);
 
+  // Add a new member to the team
   const addMember = () => {
     if (newMember.trim() !== "" && !currentMembers.includes(newMember)) {
       setCurrentMembers([...currentMembers, newMember]);
       setNewMember("");
+    } else {
+      alert("Member name cannot be empty or duplicate.");
     }
   };
 
+  // Remove a member from the current list
   const removeMember = (index) => {
     const updatedMembers = currentMembers.filter((_, i) => i !== index);
     setCurrentMembers(updatedMembers);
   };
 
+  // Save or update a team
   const saveTeam = async () => {
     if (newTeam.trim() !== "" && currentMembers.length > 0) {
       const teamData = { name: newTeam, members: currentMembers };
 
       try {
         if (editTeamId) {
-          // Update team
+          // Update existing team
           const teamDoc = doc(db, "teams", editTeamId);
           await updateDoc(teamDoc, teamData);
         } else {
@@ -59,9 +72,7 @@ const TeamManagement = () => {
         fetchTeams();
 
         // Reset inputs
-        setNewTeam("");
-        setCurrentMembers([]);
-        setEditTeamId(null);
+        resetForm();
       } catch (error) {
         console.error("Error saving team:", error);
       }
@@ -70,6 +81,7 @@ const TeamManagement = () => {
     }
   };
 
+  // Delete a team
   const deleteTeam = async (teamId) => {
     try {
       const teamDoc = doc(db, "teams", teamId);
@@ -80,15 +92,26 @@ const TeamManagement = () => {
     }
   };
 
+  // Edit an existing team
   const editTeam = (team) => {
     setNewTeam(team.name);
     setCurrentMembers(team.members);
     setEditTeamId(team.id);
   };
 
+  // Reset the form
+  const resetForm = () => {
+    setNewTeam("");
+    setNewMember("");
+    setCurrentMembers([]);
+    setEditTeamId(null);
+  };
+
   return (
     <div className="team-management">
       <h2 className="header">Manage Teams</h2>
+
+      {/* Input for team name */}
       <div className="input-group">
         <input
           type="text"
@@ -98,6 +121,8 @@ const TeamManagement = () => {
           onChange={(e) => setNewTeam(e.target.value)}
         />
       </div>
+
+      {/* Input for adding members */}
       <div className="input-group">
         <input
           type="text"
@@ -110,6 +135,8 @@ const TeamManagement = () => {
           Add Member
         </button>
       </div>
+
+      {/* Display current members */}
       <div className="members-section">
         <h4 className="sub-header">Current Members</h4>
         <ul className="list">
@@ -126,9 +153,13 @@ const TeamManagement = () => {
           ))}
         </ul>
       </div>
+
+      {/* Save or Update button */}
       <button className="btn save-btn" onClick={saveTeam}>
         {editTeamId ? "Update Team" : "Add Team"}
       </button>
+
+      {/* List of teams */}
       <div className="teams-section">
         <h3 className="header">Teams</h3>
         {teams.map((team) => (
