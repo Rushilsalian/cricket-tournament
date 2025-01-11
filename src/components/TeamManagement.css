@@ -1,107 +1,184 @@
 /* General Styling */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
-    margin: 0;
-    padding: 0;
-  }
-  
-  .team-management {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  /* Headers */
-  .header {
-    font-size: 24px;
-    color: #333333;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .sub-header {
-    font-size: 18px;
-    color: #666666;
-    margin-top: 10px;
-  }
-  
-  /* Input Group */
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 0;
+}
+
+.team-management {
+  max-width: 95%;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Headers */
+.header {
+  font-size: 24px;
+  color: #333333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.sub-header {
+  font-size: 18px;
+  color: #666666;
+  margin-top: 10px;
+  text-align: center;
+}
+
+/* Input Group */
+.input-group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.input {
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #cccccc;
+  border-radius: 4px;
+  width: 100%;
+}
+
+.btn {
+  padding: 10px 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.add-btn {
+  background-color: #28a745;
+  color: #ffffff;
+}
+
+.add-btn:hover {
+  background-color: #218838;
+}
+
+.save-btn {
+  background-color: #007bff;
+  color: #ffffff;
+  margin-top: 10px;
+}
+
+.save-btn:hover {
+  background-color: #0056b3;
+}
+
+/* List and Items */
+.list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.list-item {
+  padding: 10px;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  margin-bottom: 5px;
+  background-color: #f8f9fa;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Members Section */
+.members-section {
+  text-align: center;
+}
+
+.members-section ul {
+  padding: 0;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+/* Teams Section */
+.teams-section {
+  margin-top: 20px;
+}
+
+.team-card {
+  padding: 15px;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+.team-name {
+  font-size: 20px;
+  color: #444444;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.team-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.edit-btn {
+  background-color: #ffc107;
+  color: #ffffff;
+}
+
+.edit-btn:hover {
+  background-color: #e0a800;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: #ffffff;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}
+
+/* Responsive Styling */
+@media (max-width: 768px) {
   .input-group {
-    margin-bottom: 15px;
-    display: flex;
-    gap: 10px;
+    flex-direction: column;
+    gap: 8px;
   }
-  
-  .input {
-    flex: 1;
-    padding: 8px;
-    font-size: 16px;
-    border: 1px solid #cccccc;
-    border-radius: 4px;
-  }
-  
-  .btn {
-    padding: 8px 12px;
-    font-size: 16px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .add-btn {
-    background-color: #28a745;
-    color: #ffffff;
-  }
-  
-  .add-btn:hover {
-    background-color: #218838;
-  }
-  
-  .save-btn {
-    background-color: #007bff;
-    color: #ffffff;
-    margin-top: 10px;
-  }
-  
-  .save-btn:hover {
-    background-color: #0056b3;
-  }
-  
-  /* List and Items */
-  .list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .list-item {
-    padding: 8px;
-    border: 1px solid #dddddd;
-    border-radius: 4px;
-    margin-bottom: 5px;
-    background-color: #f8f9fa;
-  }
-  
-  /* Teams Section */
-  .teams-section {
-    margin-top: 20px;
-  }
-  
+
   .team-card {
-    padding: 15px;
-    background-color: #f1f1f1;
-    border-radius: 8px;
-    margin-bottom: 15px;
+    text-align: center;
   }
-  
-  .team-name {
+
+  .team-actions {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .list-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .header {
     font-size: 20px;
-    color: #444444;
-    margin-bottom: 10px;
   }
-  
+
+  .sub-header {
+    font-size: 16px;
+  }
+
+  .btn {
+    font-size: 14px;
+    padding: 8px;
+  }
+}

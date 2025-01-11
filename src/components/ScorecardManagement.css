@@ -1,89 +1,157 @@
 /* General Styling */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    margin: 0;
-    padding: 0;
-  }
-  
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
+}
+
+.scorecard-management {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.header {
+  font-size: 24px;
+  color: #333;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.input-group, .current-match, .ball-details {
+  margin-bottom: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.input {
+  padding: 8px;
+  font-size: 16px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  flex: 1 1 calc(50% - 10px);
+  min-width: 150px;
+}
+
+.small-input {
+  width: 100%;
+  flex: 1 1 auto;
+}
+
+.btn {
+  padding: 8px 16px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.btn:hover {
+  background-color: #0056b3;
+}
+
+.matches-list {
+  margin-top: 20px;
+}
+
+.match-card {
+  margin-bottom: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  background-color: #ffffff;
+}
+
+.ball-list {
+  list-style: none;
+  padding: 0;
+}
+
+.list-item {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+}
+
+.accordion-header {
+  background-color: #f1f1f1;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.accordion-header:hover {
+  background-color: #ddd;
+}
+
+.accordion-body {
+  padding: 10px;
+  background-color: #f9f9f9;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
   .scorecard-management {
-    max-width: 900px;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #ffffff;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .header {
-    font-size: 24px;
-    color: #333;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  
-  .input-group, .current-match, .ball-details {
-    margin-bottom: 15px;
-  }
-  
-  .input {
-    padding: 8px;
-    font-size: 16px;
-    margin-right: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-  
-  .small-input {
-    width: 120px;
-  }
-  
-  .btn {
-    padding: 8px 16px;
-    font-size: 16px;
-    background-color: #007bff;
-    color: #ffffff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-  }
-  
-  .btn:hover {
-    background-color: #0056b3;
-  }
-  
-  .matches-list {
-    margin-top: 20px;
-  }
-  
-  .match-card {
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-  }
-  
-  .ball-list {
-    list-style: none;
-    padding: 0;
-  }
-  
-  .list-item {
-    padding: 8px;
-    border-bottom: 1px solid #ddd;
-  }
-  .accordion-header {
-    background-color: #f1f1f1;
-    padding: 10px;
-    cursor: pointer;
-  }
-  
-  .accordion-header:hover {
-    background-color: #ddd;
-  }
-  
-  .accordion-body {
-    padding: 10px;
-    background-color: #f9f9f9;
+      padding: 10px;
   }
 
+  .header {
+      font-size: 20px;
+  }
+
+  .input {
+      flex: 1 1 100%;
+      margin-right: 0;
+  }
+
+  .btn {
+      font-size: 14px;
+      padding: 8px 10px;
+  }
+
+  .matches-list {
+      margin-top: 15px;
+  }
+
+  .match-card {
+      font-size: 14px;
+  }
+
+  .list-item {
+      font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+      font-size: 18px;
+  }
+
+  .btn {
+      font-size: 12px;
+      padding: 6px 8px;
+  }
+
+  .input {
+      font-size: 14px;
+      padding: 6px;
+  }
+
+  .match-card {
+      padding: 8px;
+      font-size: 12px;
+  }
+
+  .list-item {
+      font-size: 12px;
+  }
+}
